@@ -549,27 +549,31 @@ RETURN ONLY JSON. DO NOT INCLUDE MARKDOWN OR \`\`\` wrappers.`;
                                 <div className="space-y-6 max-w-2xl animate-in fade-in slide-in-from-left-2 duration-300 p-6 lg:p-8">
 
                                     {/* Master AI Generation Box */}
-                                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-pink-100 flex flex-col sm:flex-row gap-3 items-center shadow-sm">
-                                        <div className="bg-pink-100 p-2 rounded-full text-pink-600 shrink-0">
+                                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-pink-100 flex flex-col sm:flex-row gap-3 items-start shadow-sm">
+                                        <div className="bg-pink-100 p-2 rounded-full text-pink-600 shrink-0 mt-1">
                                             <Sparkles size={20} />
                                         </div>
-                                        <div className="flex-1 w-full relative">
-                                            <input
+                                        <div className="flex-1 w-full relative flex flex-col gap-2">
+                                            <textarea
                                                 id="ai-master-prompt"
-                                                type="text"
                                                 placeholder={t('masterAIPromptPlaceholder')}
-                                                className="w-full text-sm py-2 px-3 border-none bg-white rounded-lg shadow-sm focus:ring-2 focus:ring-pink-300 focus:outline-none pe-32"
+                                                className="w-full text-sm py-3 px-3 border-none bg-white rounded-lg shadow-sm focus:ring-2 focus:ring-pink-300 focus:outline-none min-h-[120px] resize-y"
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') handleMasterAIGenerate(e.target.value);
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        handleMasterAIGenerate(e.target.value);
+                                                    }
                                                 }}
                                             />
-                                            <button
-                                                onClick={() => handleMasterAIGenerate(document.getElementById('ai-master-prompt').value)}
-                                                className="absolute end-1 top-1 bottom-1 px-3 bg-pink-600 text-white text-xs font-semibold rounded-md hover:bg-pink-700 transition"
-                                                disabled={isSaving}
-                                            >
-                                                {t('masterAIGenerateBtn')}
-                                            </button>
+                                            <div className="flex justify-end">
+                                                <button
+                                                    onClick={() => handleMasterAIGenerate(document.getElementById('ai-master-prompt').value)}
+                                                    className="px-4 py-2 bg-pink-600 text-white text-sm font-semibold rounded-md hover:bg-pink-700 transition shadow-sm"
+                                                    disabled={isSaving}
+                                                >
+                                                    {t('masterAIGenerateBtn')}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
