@@ -180,6 +180,7 @@ const HumanReadableDisplay = ({ data }) => {
     if (data === null || data === undefined) return null;
 
     const renderNode = (node, depth = 0) => {
+        if (node === null || node === undefined) return <span className="text-gray-400 italic text-sm">Not provided</span>;
         if (Array.isArray(node)) {
             if (node.length === 0) return <span className="text-gray-400 italic text-sm">Empty list</span>;
             return (
