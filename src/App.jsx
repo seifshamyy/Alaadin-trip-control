@@ -741,6 +741,76 @@ RETURN ONLY JSON. DO NOT INCLUDE MARKDOWN OR \`\`\` wrappers.`;
     );
 };
 
+// --- Inline Arabic Title Cell ---
+const TitleArCell = ({ tour, onUpdate }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [val, setVal] = useState(tour['title - ar'] || '');
+    const [isSaving, setIsSaving] = useState(false);
+    const toast = useToast();
+
+    const handleSave = async (newVal) => {
+        setIsSaving(true);
+        const { error } = await supabase.from('travel_tours').update({ 'title - ar': newVal }).eq('id', tour.id);
+        setIsSaving(false);
+        if (error) {
+            toast(error.message, 'error');
+        } else {
+            toast('Arabic title saved!', 'success');
+            setIsEditing(false);
+            setVal(newVal);
+            onUpdate();
+        }
+    };
+
+    const handleAI = async () => {
+        setIsSaving(true);
+        try {
+            const system = 'Translate the provided English tour title into fluent Arabic. Return STRICTLY valid JSON like {"translation": "arabic text"}';
+            const res = await callOpenRouter(system, tour.title);
+            if (res?.translation) {
+                await handleSave(res.translation);
+            } else {
+                toast('AI Generation failed parsing', 'error');
+                setIsSaving(false);
+            }
+        } catch (err) {
+            toast('AI Generation failed', 'error');
+            setIsSaving(false);
+        }
+    };
+
+    if (isEditing) {
+        return (
+            <div className="flex items-center gap-2 max-w-[250px] w-full">
+                <input
+                    autoFocus
+                    className="border border-[#c9922a] px-2 py-1 rounded w-full text-sm font-arabic focus:outline-none"
+                    value={val}
+                    onChange={e => setVal(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSave(val); else if (e.key === 'Escape') { setIsEditing(false); setVal(tour['title - ar'] || ''); } }}
+                    disabled={isSaving}
+                />
+                <button onClick={() => handleSave(val)} disabled={isSaving} className="text-green-600 hover:bg-green-50 p-1 rounded shrink-0 transition-colors"><Check size={16} /></button>
+                <button onClick={() => { setIsEditing(false); setVal(tour['title - ar'] || ''); }} disabled={isSaving} className="text-gray-400 p-1 hover:bg-gray-50 rounded shrink-0 transition-colors"><X size={16} /></button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex items-center justify-between group gap-2 min-w-[200px] w-full">
+            <span className={`font-arabic text-sm ${!tour['title - ar'] ? 'text-gray-400 italic text-xs' : 'text-[#1a1f3a] font-medium'}`}>
+                {tour['title - ar'] || 'No translation'}
+            </span>
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => setIsEditing(true)} className="p-1.5 hover:bg-gray-200 text-gray-500 rounded transition-colors" title="Edit"><Edit2 size={14} /></button>
+                <button onClick={handleAI} disabled={isSaving} className="p-1.5 hover:bg-pink-100 text-pink-600 rounded transition-colors tooltip" title="Generate with AI">
+                    {isSaving ? <Activity size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                </button>
+            </div>
+        </div>
+    );
+};
+
 // --- Main App Logic & UI ---
 export default function App() {
     const { lang, t, setLang } = useLanguage();
@@ -967,8 +1037,8 @@ export default function App() {
                             <table className="w-full text-start text-sm whitespace-nowrap">
                                 <thead className="bg-gray-50 text-gray-600 font-medium sticky top-0 z-10 border-b border-gray-200 shadow-sm">
                                     <tr>
-                                        {[t('id'), t('title'), t('type'), t('destination'), t('basePrice'), t('actions')].map((label, idx) => {
-                                            const colKeys = ['id', 'title', 'tour_type', 'primary_destination', ''];
+                                        {[t('id'), t('title'), t('titleAr'), t('type'), t('destination'), t('basePrice'), t('actions')].map((label, idx) => {
+                                            const colKeys = ['id', 'title', 'title - ar', 'tour_type', 'primary_destination', ''];
                                             const key = colKeys[idx];
                                             return (
                                                 <th key={label} className={`px-6 py-4 cursor-pointer hover:bg-gray-100 transition-colors ${!key && 'cursor-default pointer-events-none text-end'}`} onClick={() => key && handleSort(key)}>
@@ -988,6 +1058,9 @@ export default function App() {
                                             <td className="px-6 py-4">
                                                 <div className="font-semibold text-[#1a1f3a]">{tour.title}</div>
                                                 <div className="text-xs text-gray-500">/{tour.slug}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <TitleArCell tour={tour} onUpdate={fetchTours} />
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
