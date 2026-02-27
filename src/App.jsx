@@ -871,7 +871,7 @@ export default function App() {
             {/* Sidebar */}
             <aside className="w-64 bg-[#1a1f3a] text-white hidden lg:flex flex-col shadow-2xl z-50 fixed h-full inset-y-0 start-0">
                 <div className="p-6 flex items-center justify-between border-b border-white/10">
-                    <img src="https://whmbrguzumyatnslzfsq.supabase.co/storage/v1/object/public/Client%20Logos/alaadintrips.png" alt="Alaa Din Trips" className="h-10 object-contain bg-white rounded-md p-1" />
+                    <img src="https://whmbrguzumyatnslzfsq.supabase.co/storage/v1/object/public/Client%20Logos/alaadintrips.png" alt="Alaa Din Trips" className="h-16 object-contain bg-white rounded-md p-1" />
                     <button onClick={() => setLang(lang === 'en' ? 'ar' : 'en')} className="p-1.5 bg-white/10 hover:bg-white/20 rounded-md text-xs font-bold uppercase transition">
                         {lang === 'en' ? 'AR' : 'EN'}
                     </button>
