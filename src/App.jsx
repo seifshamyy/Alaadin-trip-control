@@ -744,13 +744,13 @@ RETURN ONLY JSON. DO NOT INCLUDE MARKDOWN OR \`\`\` wrappers.`;
 // --- Inline Arabic Title Cell ---
 const TitleArCell = ({ tour, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [val, setVal] = useState(tour['title - ar'] || '');
+    const [val, setVal] = useState(tour['title-ar'] || '');
     const [isSaving, setIsSaving] = useState(false);
     const toast = useToast();
 
     const handleSave = async (newVal) => {
         setIsSaving(true);
-        const { error } = await supabase.from('travel_tours').update({ 'title - ar': newVal }).eq('id', tour.id);
+        const { error } = await supabase.from('travel_tours').update({ 'title-ar': newVal }).eq('id', tour.id);
         setIsSaving(false);
         if (error) {
             toast(error.message, 'error');
@@ -787,19 +787,19 @@ const TitleArCell = ({ tour, onUpdate }) => {
                     className="border border-[#c9922a] px-2 py-1 rounded w-full text-sm font-arabic focus:outline-none"
                     value={val}
                     onChange={e => setVal(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') handleSave(val); else if (e.key === 'Escape') { setIsEditing(false); setVal(tour['title - ar'] || ''); } }}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSave(val); else if (e.key === 'Escape') { setIsEditing(false); setVal(tour['title-ar'] || ''); } }}
                     disabled={isSaving}
                 />
                 <button onClick={() => handleSave(val)} disabled={isSaving} className="text-green-600 hover:bg-green-50 p-1 rounded shrink-0 transition-colors"><Check size={16} /></button>
-                <button onClick={() => { setIsEditing(false); setVal(tour['title - ar'] || ''); }} disabled={isSaving} className="text-gray-400 p-1 hover:bg-gray-50 rounded shrink-0 transition-colors"><X size={16} /></button>
+                <button onClick={() => { setIsEditing(false); setVal(tour['title-ar'] || ''); }} disabled={isSaving} className="text-gray-400 p-1 hover:bg-gray-50 rounded shrink-0 transition-colors"><X size={16} /></button>
             </div>
         );
     }
 
     return (
         <div className="flex items-center justify-between group gap-2 min-w-[200px] w-full">
-            <span className={`font-arabic text-sm ${!tour['title - ar'] ? 'text-gray-400 italic text-xs' : 'text-[#1a1f3a] font-medium'}`}>
-                {tour['title - ar'] || 'No translation'}
+            <span className={`font-arabic text-sm ${!tour['title-ar'] ? 'text-gray-400 italic text-xs' : 'text-[#1a1f3a] font-medium'}`}>
+                {tour['title-ar'] || 'No translation'}
             </span>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => setIsEditing(true)} className="p-1.5 hover:bg-gray-200 text-gray-500 rounded transition-colors" title="Edit"><Edit2 size={14} /></button>
@@ -1038,7 +1038,7 @@ export default function App() {
                                 <thead className="bg-gray-50 text-gray-600 font-medium sticky top-0 z-10 border-b border-gray-200 shadow-sm">
                                     <tr>
                                         {[t('id'), t('title'), t('titleAr'), t('type'), t('destination'), t('basePrice'), t('actions')].map((label, idx) => {
-                                            const colKeys = ['id', 'title', 'title - ar', 'tour_type', 'primary_destination', ''];
+                                            const colKeys = ['id', 'title', 'title-ar', 'tour_type', 'primary_destination', ''];
                                             const key = colKeys[idx];
                                             return (
                                                 <th key={label} className={`px-6 py-4 cursor-pointer hover:bg-gray-100 transition-colors ${!key && 'cursor-default pointer-events-none text-end'}`} onClick={() => key && handleSort(key)}>
